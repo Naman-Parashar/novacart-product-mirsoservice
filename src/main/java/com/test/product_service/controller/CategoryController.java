@@ -16,6 +16,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,6 +61,7 @@ public class CategoryController {
             description = "Creates a new category and returns generated category ID"
     )
     @PostMapping("/add-category")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> addCategory(@Valid @RequestBody AddUpdateCategoryRequestDTO addCategoryRequestDTO){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -71,6 +73,7 @@ public class CategoryController {
             description = "Permanently Deletes a category using category ID"
     )
     @DeleteMapping("/remove-category/{id}/permanent")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> removeCategoryById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -82,6 +85,7 @@ public class CategoryController {
             description = "Soft deletes a category using category ID"
     )
     @DeleteMapping("/remove-category/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> softRemoveCategoryById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -93,6 +97,7 @@ public class CategoryController {
             description = "Restore Soft deleted category using category ID"
     )
     @PatchMapping("/restore-category/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> restoreCategoryById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -104,6 +109,7 @@ public class CategoryController {
             description = "Returns paginated list of deleted categories with sorting support"
     )
     @GetMapping("/get-deleted-category")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<GetCategoryResponseDTO>>> getDeletedCategory(
             @ModelAttribute SearchCategoryRequestDTO searchCategoryRequestDTO,
             @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Page number cannot be negative") int pageNumber,
@@ -119,6 +125,7 @@ public class CategoryController {
             description = "Returns deleted category details using its unique identifier"
     )
     @GetMapping("/get-deleted-category-by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<GetCategoryResponseDTO>> getDeletedCategoryById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
         return ResponseEntity.ok(categoryService.getDeletedCategoryById(id));
     }
@@ -128,6 +135,7 @@ public class CategoryController {
             description = "Updates an existing category"
     )
     @PatchMapping("/update-category-by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<GetCategoryResponseDTO>> updateCategoryById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id,@Valid @RequestBody AddUpdateCategoryRequestDTO  updateCategoryRequestDTO){
         return ResponseEntity.ok(categoryService.updateCategoryById(id,updateCategoryRequestDTO));
     }

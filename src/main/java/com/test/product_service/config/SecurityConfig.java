@@ -37,8 +37,10 @@ public class SecurityConfig {
                         // Public product browsing
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/api/v1/products/**",
-                                "/api/v1/categories/**"
+                                "/api/v1/products/get-all-products",
+                                "/api/v1/products/get-product-by-id/**",
+                                "/api/v1/categories/get-all-categories",
+                                "/api/v1/categories/get-category-by-id/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
