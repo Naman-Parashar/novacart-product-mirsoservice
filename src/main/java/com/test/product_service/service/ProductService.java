@@ -9,14 +9,14 @@ import com.test.product_service.dto.response.product.GetProductResponseDTO;
 import com.test.product_service.uttils.enums.ProductSortField;
 import com.test.product_service.uttils.enums.SortDirection;
 
-public interface IProduct {
+public interface ProductService {
     ApiResponse<PageResponse<GetProductResponseDTO>> getAllProducts(SearchProductRequestDTO searchProductRequestDTO,int pageNumber, int size, ProductSortField sortBy, SortDirection direction);
-    ApiResponse<GetProductResponseDTO> getProductById(Integer id);
-    ApiResponse<Integer> addProduct(AddProductRequestDTO addProductRequestDTO);
-    ApiResponse<Integer> removeProductById(Integer id);
-    ApiResponse<Integer>softRemoveProductById(Integer id);
-    ApiResponse<Integer>restoreProductById(Integer id);
-    ApiResponse<GetProductResponseDTO> getDeletedProductById(Integer id);
+    ApiResponse<GetProductResponseDTO> getProductById(Long id);
+    ApiResponse<Long> addProduct(AddProductRequestDTO addProductRequestDTO);
+    ApiResponse<Long> removeProductById(Long id);
+    ApiResponse<Long>softRemoveProductById(Long id);
+    ApiResponse<Long>restoreProductById(Long id);
+    ApiResponse<GetProductResponseDTO> getDeletedProductById(Long id);
     ApiResponse<PageResponse<GetProductResponseDTO>>getDeletedProduct(SearchProductRequestDTO searchProductRequestDTO,int pageNumber, int size, ProductSortField sortBy, SortDirection direction);
-    ApiResponse<GetProductResponseDTO> updateProductById( Integer id, UpdateProductRequestDTO updateProductRequestDTO);
+    ApiResponse<GetProductResponseDTO> updateProductById( Long id, UpdateProductRequestDTO updateProductRequestDTO);
 }
