@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface ICategoryRepo extends JpaRepository<Category, Integer>, JpaSpecificationExecutor<Category> {
-    Optional<Category> findByIdAndDeletedAtIsNull(Integer id);
-    Optional<Category> findByIdAndDeletedAtIsNotNull(Integer id);
+public interface CategoryRepo extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
+    Optional<Category> findByIdAndDeletedAtIsNull(Long id);
+    Optional<Category> findByIdAndDeletedAtIsNotNull(Long id);
     boolean existsByCategoryNameIgnoreCaseAndDeletedAtIsNull(String categoryName);
-    boolean existsByCategoryNameIgnoreCaseAndIdNotAndDeletedAtIsNull(String categoryName, Integer id);
+    boolean existsByCategoryNameIgnoreCaseAndIdNotAndDeletedAtIsNull(String categoryName, Long id);
 }

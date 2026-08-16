@@ -1,10 +1,10 @@
 CREATE TABLE categories (
-                            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                            id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                             category_name VARCHAR(255) NOT NULL UNIQUE,
-                            created_at datetime NOT NULL default current_timestamp,
-                            updated_at datetime NOT NULL default current_timestamp on update current_timestamp,
-                            deleted_at datetime default NULL,
-                            is_active boolean not null default true,
-                            created_by int not null default 1111,
-                            updated_by int not null default 1111
+                            created_at TIMESTAMP NOT NULL default current_timestamp,
+                            updated_at TIMESTAMP NOT NULL default current_timestamp on update current_timestamp,
+                            deleted_at TIMESTAMP default NULL,
+                            is_active BOOLEAN not null default false,
+                            created_by BIGINT not null default 0000,
+                            updated_by BIGINT  default 0000
 );

@@ -17,7 +17,7 @@ public record GetProductResponseDTO(
                 description = "Unique identifier of the product",
                 example = "101"
         )
-        Integer id,
+        Long id,
 
         @Schema(
                 description = "Name of the product",
@@ -71,13 +71,13 @@ public record GetProductResponseDTO(
                 description = "ID of the user who created the product",
                 example = "1"
         )
-        Integer createdBy,
+        Long createdBy,
 
         @Schema(
                 description = "ID of the user who last updated the product",
                 example = "2"
         )
-        Integer updatedBy,
+        Long updatedBy,
 
         @Schema(
                 description = "Timestamp when the product was created",
@@ -102,7 +102,7 @@ public record GetProductResponseDTO(
                 description = "Unique identifier of the category",
                 example = "1"
         )
-        Integer categoryId,
+        Long categoryId,
 
         @Schema(
                 description = "Name of the category",

@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface IProductRepo extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
-    Optional<Product> findByIdAndDeletedAtIsNull(Integer id);
-    Optional<Product> findByIdAndDeletedAtIsNotNull(Integer id);
+public interface ProductRepo extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+    Optional<Product> findByIdAndDeletedAtIsNull(Long id);
+    Optional<Product> findByIdAndDeletedAtIsNotNull(Long id);
     boolean existsByProductNameIgnoreCaseAndDeletedAtIsNull(String productName);
 }

@@ -1,4 +1,4 @@
-package com.test.product_service.error_handling.dto;
+package com.test.product_service.exception.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

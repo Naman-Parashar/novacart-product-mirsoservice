@@ -2,6 +2,7 @@ package com.test.product_service.dto.request.category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Schema(
@@ -19,6 +20,13 @@ public record AddUpdateCategoryRequestDTO(
         @NotBlank(message = "Category name is required")
         @Size(min = 2, max = 50,
                 message = "Category name must be between 2 and 50 characters")
-        String categoryName
+        String categoryName,
+
+        @Schema(
+                description = "Whether the category is active",
+                example = "true"
+        )
+        @NotNull(message = "Category active status is required")
+        Boolean isActive
 ) {
 }
