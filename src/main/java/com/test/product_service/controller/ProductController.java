@@ -6,7 +6,7 @@ import com.test.product_service.dto.request.product.SearchProductRequestDTO;
 import com.test.product_service.dto.request.product.UpdateProductRequestDTO;
 import com.test.product_service.dto.response.PageResponse;
 import com.test.product_service.dto.response.product.GetProductResponseDTO;
-import com.test.product_service.service.impl.ProductServiceImpl;
+import com.test.product_service.service.ProductService;
 import com.test.product_service.uttils.enums.ProductSortField;
 import com.test.product_service.uttils.enums.SortDirection;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +17,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 )
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     @Operation(
             summary = "Get all products",
@@ -52,7 +53,7 @@ public class ProductController {
             description = "Returns a single product using its unique identifier"
     )
     @GetMapping("/get-product-by-id/{id}")
-    public ResponseEntity<ApiResponse<GetProductResponseDTO>> getProductById(@PathVariable @Positive(message = "Id must be greater than 0")  Integer id){
+    public ResponseEntity<ApiResponse<GetProductResponseDTO>> getProductById(@PathVariable @Positive(message = "Id must be greater than 0")  Long id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
@@ -61,7 +62,8 @@ public class ProductController {
             description = "Creates a new product and returns the generated product ID"
     )
     @PostMapping("/add-product")
-    public ResponseEntity<ApiResponse<Integer>> addProduct(@Valid @RequestBody AddProductRequestDTO addProductRequestDTO){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Long>> addProduct(@Valid @RequestBody AddProductRequestDTO addProductRequestDTO){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(productService.addProduct(addProductRequestDTO));
@@ -72,7 +74,8 @@ public class ProductController {
             description = "Permanently deletes a product using product ID"
     )
     @DeleteMapping("/remove-product/{id}/permanent")
-    public ResponseEntity<ApiResponse<Integer>> removeProductById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Long>> removeProductById(@PathVariable @Positive(message = "Id must be greater than 0") Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(productService.removeProductById(id));
@@ -83,7 +86,8 @@ public class ProductController {
             description = "Soft deletes a product using product ID"
     )
     @DeleteMapping("/remove-product/{id}")
-    public ResponseEntity<ApiResponse<Integer>> softRemoveProductById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Long>> softRemoveProductById(@PathVariable @Positive(message = "Id must be greater than 0") Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(productService.softRemoveProductById(id));
@@ -94,7 +98,8 @@ public class ProductController {
             description = "Restore Soft deleted product using product ID"
     )
     @PatchMapping("/restore-product/{id}")
-    public ResponseEntity<ApiResponse<Integer>> restoreProductById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Long>> restoreProductById(@PathVariable @Positive(message = "Id must be greater than 0") Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(productService.restoreProductById(id));
@@ -105,6 +110,7 @@ public class ProductController {
             description = "Returns paginated list of deleted products with sorting support"
     )
     @GetMapping("/get-deleted-product")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<GetProductResponseDTO>>> getDeletedProduct(
             @ModelAttribute SearchProductRequestDTO searchProductRequestDTO,
             @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Page number cannot be negative") int pageNumber,
@@ -120,7 +126,8 @@ public class ProductController {
             description = "Returns a single deleted product using its unique identifier"
     )
     @GetMapping("/get-deleted-product-by-id/{id}")
-    public ResponseEntity<ApiResponse<GetProductResponseDTO>> getDeletedProductById(@PathVariable @Positive(message = "Id must be greater than 0")  Integer id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<GetProductResponseDTO>> getDeletedProductById(@PathVariable @Positive(message = "Id must be greater than 0")  Long id){
         return ResponseEntity.ok(productService.getDeletedProductById(id));
     }
 
@@ -129,7 +136,8 @@ public class ProductController {
             description = "Updates selected fields of an existing product"
     )
     @PatchMapping("/update-product-by-id/{id}")
-    public ResponseEntity<ApiResponse<GetProductResponseDTO>> updateProductById(@PathVariable @Positive(message = "Id must be greater than 0") Integer id, @Valid @RequestBody UpdateProductRequestDTO updateProductRequestDTO){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<GetProductResponseDTO>> updateProductById(@PathVariable @Positive(message = "Id must be greater than 0") Long id, @Valid @RequestBody UpdateProductRequestDTO updateProductRequestDTO){
         return ResponseEntity.ok(productService.updateProductById(id,updateProductRequestDTO));
     }
 }

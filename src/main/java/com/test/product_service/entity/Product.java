@@ -16,7 +16,7 @@ public class Product extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "product_name", nullable = false)
     private String productName;

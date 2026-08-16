@@ -102,7 +102,7 @@ public record UpdateProductRequestDTO(
                 minimum = "1"
         )
         @Positive(message = "Category ID must be greater than 0")
-        Integer categoryId
+        Long categoryId
 
 ) {
 }

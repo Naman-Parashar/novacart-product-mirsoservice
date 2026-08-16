@@ -16,7 +16,7 @@ public record GetCategoryResponseDTO(
                 description = "Unique identifier of the category",
                 example = "1"
         )
-        int id,
+        Long id,
 
         @Schema(
                 description = "Name of the category",
@@ -40,13 +40,13 @@ public record GetCategoryResponseDTO(
                 description = "ID of the user who created the category",
                 example = "1"
         )
-        Integer createdBy,
+        Long createdBy,
 
         @Schema(
                 description = "ID of the user who last updated the category",
                 example = "2"
         )
-        Integer updatedBy,
+        Long updatedBy,
 
         @Schema(
                 description = "Whether the category is active",

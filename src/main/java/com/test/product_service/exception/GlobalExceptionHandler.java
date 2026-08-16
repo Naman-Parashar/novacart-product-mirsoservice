@@ -1,8 +1,8 @@
-package com.test.product_service.error_handling;
+package com.test.product_service.exception;
 
-import com.test.product_service.error_handling.custom_exception.DuplicateResourceException;
-import com.test.product_service.error_handling.custom_exception.ResourceNotFoundException;
-import com.test.product_service.error_handling.dto.ErrorResponse;
+import com.test.product_service.exception.custom_exception.DuplicateResourceException;
+import com.test.product_service.exception.custom_exception.ResourceNotFoundException;
+import com.test.product_service.exception.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

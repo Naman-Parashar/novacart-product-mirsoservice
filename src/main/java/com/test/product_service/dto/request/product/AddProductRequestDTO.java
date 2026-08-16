@@ -94,7 +94,7 @@ public record AddProductRequestDTO(
         )
         @NotNull(message = "Category ID is required")
         @Positive(message = "Category ID must be greater than 0")
-        Integer categoryId
+        Long categoryId
 
 ) {
 }

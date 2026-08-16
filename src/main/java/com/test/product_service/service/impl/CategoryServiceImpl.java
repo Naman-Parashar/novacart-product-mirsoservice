@@ -7,12 +7,12 @@ import com.test.product_service.dto.request.category.SearchCategoryRequestDTO;
 import com.test.product_service.dto.response.PageResponse;
 import com.test.product_service.dto.response.category.GetCategoryResponseDTO;
 import com.test.product_service.entity.Category;
-import com.test.product_service.error_handling.custom_exception.DuplicateResourceException;
-import com.test.product_service.error_handling.custom_exception.ResourceNotFoundException;
+import com.test.product_service.exception.custom_exception.DuplicateResourceException;
+import com.test.product_service.exception.custom_exception.ResourceNotFoundException;
 import com.test.product_service.mapper.PagedResponseMapper;
 import com.test.product_service.mapper.category.CategoryMapper;
-import com.test.product_service.repository.ICategoryRepo;
-import com.test.product_service.service.ICategory;
+import com.test.product_service.repository.CategoryRepo;
+import com.test.product_service.service.CategoryService;
 import com.test.product_service.specification.category.CategorySpecificationBuilder;
 import com.test.product_service.uttils.VerifyResource;
 import com.test.product_service.uttils.enums.CategorySortField;
@@ -33,9 +33,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CategoryServiceImpl implements ICategory {
+public class CategoryServiceImpl implements CategoryService {
 
-    private final ICategoryRepo categoryRepo;
+    private final CategoryRepo categoryRepo;
     private final VerifyResource verifyResource;
     private final PaginationProperties paginationProperties;
 
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional(readOnly = true)
-    public ApiResponse<GetCategoryResponseDTO> getCategoryById(Integer id) {
+    public ApiResponse<GetCategoryResponseDTO> getCategoryById(Long id) {
         Category category = verifyResource.verifyOrGetCategoryById(id);
         log.info("Successfully Get category with id : {}", category.getId());
 
@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional
-    public ApiResponse<Integer> addCategory(AddUpdateCategoryRequestDTO addCategoryRequestDTO) {
+    public ApiResponse<Long> addCategory(AddUpdateCategoryRequestDTO addCategoryRequestDTO) {
         Category category = CategoryMapper.toEntity(addCategoryRequestDTO);
         log.info("Creating category: {}", addCategoryRequestDTO.categoryName());
         if (categoryRepo.existsByCategoryNameIgnoreCaseAndDeletedAtIsNull(
@@ -97,10 +97,11 @@ public class CategoryServiceImpl implements ICategory {
                     "CATEGORY_ALREADY_EXISTS"
             );
         }
+        category.setCreatedBy(verifyResource.getCurrentUserId());
        Category savedcategory =  categoryRepo.save(category);
         log.info("Category created successfully. ProductId={}", category.getId());
 
-        return ApiResponse.<Integer>builder()
+        return ApiResponse.<Long>builder()
                 .success(true)
                 .message("Category Added Successfully with name : "+ savedcategory.getCategoryName())
                 .data(savedcategory.getId())
@@ -109,12 +110,12 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional
-    public ApiResponse<Integer> removeCategoryById(Integer id) {
+    public ApiResponse<Long> removeCategoryById(Long id) {
         Category category = categoryRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException ("No Category Found  with the given id : "+ id,"CATEGORY_NOT_FOUND"));
         log.info("Deleting category with id {}", id);
         categoryRepo.deleteById(id);
 
-        return ApiResponse.<Integer>builder()
+        return ApiResponse.<Long>builder()
                 .success(true)
                 .message("Category Removed Successfully with id : "+ category.getId())
                 .data(null)
@@ -123,15 +124,15 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional
-    public ApiResponse<Integer> softRemoveCategoryById(Integer id) {
+    public ApiResponse<Long> softRemoveCategoryById(Long id) {
         Category category = verifyResource.verifyOrGetCategoryById(id);
         log.info("Soft Deleting category with id {}", id);
         category.setDeletedAt(LocalDateTime.now());
         category.setIsActive(false);
-
+        category.setUpdatedBy(verifyResource.getCurrentUserId());
         categoryRepo.save(category);
 
-        return ApiResponse.<Integer>builder()
+        return ApiResponse.<Long>builder()
                 .success(true)
                 .message("Category Removed Successfully with id : "+ category.getId())
                 .data(null)
@@ -140,16 +141,16 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional
-    public ApiResponse<Integer> restoreCategoryById(Integer id) {
+    public ApiResponse<Long> restoreCategoryById(Long id) {
         Category category = categoryRepo.findByIdAndDeletedAtIsNotNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException ("No Category Found  with the given id : "+ id,"CATEGORY_NOT_FOUND"));
         log.info("Restore category with id {}", id);
         category.setDeletedAt(null);
         category.setIsActive(true);
-
+        category.setUpdatedBy(verifyResource.getCurrentUserId());
         categoryRepo.save(category);
 
-        return ApiResponse.<Integer>builder()
+        return ApiResponse.<Long>builder()
                 .success(true)
                 .message("Category Restored Successfully with id : "+ id)
                 .data(category.getId())
@@ -158,7 +159,7 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional(readOnly = true)
-    public ApiResponse<GetCategoryResponseDTO> getDeletedCategoryById(Integer id) {
+    public ApiResponse<GetCategoryResponseDTO> getDeletedCategoryById(Long id) {
         Category category = categoryRepo.findByIdAndDeletedAtIsNotNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No Deleted Category Found  with the given id : "+ id,"CATEGORY_NOT_FOUND"));
         log.info("Successfully Get deleted category with id : {}", category.getId());
@@ -205,7 +206,7 @@ public class CategoryServiceImpl implements ICategory {
 
     @Override
     @Transactional
-    public ApiResponse<GetCategoryResponseDTO> updateCategoryById(Integer id, AddUpdateCategoryRequestDTO updateCategoryRequestDTO) {
+    public ApiResponse<GetCategoryResponseDTO> updateCategoryById(Long id, AddUpdateCategoryRequestDTO updateCategoryRequestDTO) {
         if (categoryRepo.existsByCategoryNameIgnoreCaseAndIdNotAndDeletedAtIsNull(updateCategoryRequestDTO.categoryName(), id)) {
             throw new DuplicateResourceException(
                     "Category already exists with name: " + updateCategoryRequestDTO.categoryName(),
@@ -217,6 +218,7 @@ public class CategoryServiceImpl implements ICategory {
        if(updateCategoryRequestDTO.categoryName() != null && !updateCategoryRequestDTO.categoryName().isEmpty()){
            category.setCategoryName(updateCategoryRequestDTO.categoryName());
        }
+        category.setUpdatedBy(verifyResource.getCurrentUserId());
        categoryRepo.save(category);
         log.info("Category updated successfully. CategoryId={}", category.getId());
         return ApiResponse.<GetCategoryResponseDTO>builder()

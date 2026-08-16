@@ -1,4 +1,4 @@
-package com.test.product_service.error_handling.custom_exception;
+package com.test.product_service.exception.custom_exception;
 
 import lombok.Getter;
 
