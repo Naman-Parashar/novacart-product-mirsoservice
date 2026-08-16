@@ -9,9 +9,10 @@ services:
     container_name: product-service
 
     environment:
-      DB_URL: jdbc:mysql://host.docker.internal:3307/product_db
-      DB_USERNAME: product_admin
-      DB_PASSWORD: product_admin123
+        DB_URL: ${DB_URL}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
+        JWT_SECRET: ${JWT_SECRET}
 
     ports:
       - "8081:8081"
